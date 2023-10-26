@@ -93,7 +93,6 @@ def configure_deepspeed (config, para_name, para_value):
 
 deepspeed_config = {
     "train_micro_batch_size_per_gpu": batch_size,
-    "train_batch_size": batch_size,
     "block_size": block_size,
     "gradient_accumulation_steps": gradient_accumulation_steps,
     "optimizer": {
