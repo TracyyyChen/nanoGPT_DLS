@@ -86,7 +86,8 @@ config = {k: globals()[k] for k in config_keys} # will be useful for logging
 
 #####
 deepspeed_config = {
-    "train_micro_batch_size_per_gpu": batch_size,
+    "train_micro_batch_size": batch_size,
+    "block_size": block_size,
     "gradient_accumulation_steps": gradient_accumulation_steps,
     "optimizer": {
         "type": "AdamW",
@@ -99,6 +100,14 @@ deepspeed_config = {
     "offload_optimizer": {
         "device": "cpu",  # Offload optimizer states to CPU
         "pin_memory": True  # Pin optimizer states to memory
+    },
+    "scheduler": {
+        "type": "WarmupLR",
+        "params": {
+            "warmup_min_lr": 0,
+            "warmup_max_lr": learning_rate,
+            "warmup_num_steps": warmup_iters,
+        }
     }
 }
 
