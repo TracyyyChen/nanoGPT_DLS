@@ -118,7 +118,7 @@ class GPTConfig:
     bias: bool = True # True: bias in Linears and LayerNorms, like GPT-2. False: a bit better and faster
     #custimized parameters for optimization
     activation_checkpoint: bool = False
-    deep_speed: bool = False
+    #deep_speed: bool = False
 
 class GPT(nn.Module):
 

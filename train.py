@@ -31,12 +31,6 @@ import deepspeed
 from model import GPTConfig, GPT
 
 # -----------------------------------------------------------------------------
-# activation checkpointing
-activation_checkpoint = False
-deep_speed = False
-
-
-# -----------------------------------------------------------------------------
 # default config values designed to train a gpt2 (124M) on OpenWebText
 # I/O
 out_dir = 'out'
@@ -84,6 +78,49 @@ config_keys = [k for k,v in globals().items() if not k.startswith('_') and isins
 exec(open('configurator.py').read()) # overrides from command line or config file
 config = {k: globals()[k] for k in config_keys} # will be useful for logging
 # -----------------------------------------------------------------------------
+
+# Optimization: activation checkpointing
+activation_checkpoint = False
+# Optimization: Parameter Offloading using deepspeed
+deep_speed = False
+
+deepspeed_config = {
+    "train_micro_batch_size_per_gpu": batch_size,
+    "gradient_accumulation_steps": gradient_accumulation_steps,
+    "optimizer": {
+        "type": "AdamW",
+        "params": {
+            "lr": learning_rate,
+            "weight_decay": weight_decay,
+            "beta1": beta1,
+            "beta2": beta2,
+            "grad_clip": grad_clip,
+            "decay_lr": decay_lr,
+            "warmup_iters": warmup_iters,
+            "lr_decay_iters": lr_decay_iters,
+            "min_lr": min_lr,
+        },
+    },
+    "zero_optimization": {
+        "stage": 3,
+    },
+    "scheduler": {
+        "type": "OneCycleLR",
+        "params": {
+            "max_lr": learning_rate,
+            "total_steps": max_iters,
+        },
+    },
+    "activation_checkpointing": activation_checkpoint,
+    "fp16": {
+        "enabled": dtype == "float16",
+    },
+    "bf16": {
+        "enabled": dtype == "bfloat16",
+    },
+}
+
+
 
 # various inits, derived attributes, I/O setup
 ddp = int(os.environ.get('RANK', -1)) != -1 # is this a ddp run?
@@ -151,9 +188,6 @@ if os.path.exists(meta_path):
 model_args = dict(n_layer=n_layer, n_head=n_head, n_embd=n_embd, block_size=block_size,
                   bias=bias, vocab_size=None, dropout=dropout, activation_checkpoint=activation_checkpoint, deep_speed=deep_speed) # start with model_args from command line
 
-
-def configure_deepspeed ():
-    return
 
 if init_from == 'scratch':
     # init a new model from scratch
