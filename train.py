@@ -96,16 +96,6 @@ deepspeed_config = {
             "betas": [beta1, beta2],
         },
     },
-    "zero_optimization": {
-        "stage": 3,
-    },
-    "scheduler": {
-        "type": "OneCycleLR",
-        "params": {
-            "max_lr": learning_rate,
-            "total_steps": max_iters,
-        },
-    },
     "offload_optimizer": {
         "device": "cpu",  # Offload optimizer states to CPU
         "pin_memory": True  # Pin optimizer states to memory
