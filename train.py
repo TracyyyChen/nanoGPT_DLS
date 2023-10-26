@@ -93,8 +93,7 @@ deepspeed_config = {
         "params": {
             "lr": learning_rate,
             "weight_decay": weight_decay,
-            "beta1": beta1,
-            "beta2": beta2,
+            "betas": [beta1, beta2],
             "grad_clip": grad_clip,
             "decay_lr": decay_lr,
             "warmup_iters": warmup_iters,
