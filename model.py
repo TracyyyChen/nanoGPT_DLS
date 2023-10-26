@@ -296,7 +296,7 @@ class GPT(nn.Module):
         print(f"num non-decayed parameter tensors: {len(nodecay_params)}, with {num_nodecay_params:,} parameters")
 
         if optimizer == "SGD":
-            optimizer = torch.optim.SGD(optim_groups, lr=learning_rate, betas=betas)
+            optimizer = torch.optim.SGD(optim_groups, lr=learning_rate)
             print(f"using SGD optimizer")
 
         elif optimizer == "ADAM":
