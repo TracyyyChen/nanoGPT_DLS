@@ -35,6 +35,8 @@ from model import GPTConfig, GPT
 activation_checkpoint = False
 # Optimization: Parameter Offloading using deepspeed
 deep_speed = False
+# Optimization:
+optimizer = "ADAM"
 # -----------------------------------------------------------------------------
 # default config values designed to train a gpt2 (124M) on OpenWebText
 # I/O
@@ -91,6 +93,7 @@ def configure_deepspeed (config, para_name, para_value):
 
 deepspeed_config = {
     "train_micro_batch_size_per_gpu": batch_size,
+    "train_batch_size": batch_size,
     "block_size": block_size,
     "gradient_accumulation_steps": gradient_accumulation_steps,
     "optimizer": {
@@ -181,7 +184,7 @@ if os.path.exists(meta_path):
 
 ### model init
 model_args = dict(n_layer=n_layer, n_head=n_head, n_embd=n_embd, block_size=block_size,
-                  bias=bias, vocab_size=None, dropout=dropout, activation_checkpoint=activation_checkpoint) # start with model_args from command line
+                  bias=bias, vocab_size=None, dropout=dropout, activation_checkpoint=activation_checkpoint, optimizer=optimizer) # start with model_args from command line
 
 
 if init_from == 'scratch':
@@ -196,6 +199,7 @@ if init_from == 'scratch':
         print("optimizaiton: Parameter Offloading applied")
         gptconf = GPTConfig(**model_args)
         model, _, _, _ = deepspeed.initialize(model = GPT(gptconf), config_params=deepspeed_config)
+
     else:
         gptconf = GPTConfig(**model_args)
         model = GPT(gptconf)
@@ -232,6 +236,7 @@ elif init_from.startswith('gpt2'):
     for k in ['n_layer', 'n_head', 'n_embd', 'block_size', 'bias', 'vocab_size']:
         model_args[k] = getattr(model.config, k)
 # crop down the model block size if desired, using model surgery
+print("*********",block_size, model.config.block_size)
 if block_size < model.config.block_size:
     model.crop_block_size(block_size)
     model_args['block_size'] = block_size # so that the checkpoint will have the right value
