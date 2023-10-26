@@ -30,6 +30,11 @@ import deepspeed
 
 from model import GPTConfig, GPT
 
+#####
+# Optimization: activation checkpointing
+activation_checkpoint = False
+# Optimization: Parameter Offloading using deepspeed
+deep_speed = False
 # -----------------------------------------------------------------------------
 # default config values designed to train a gpt2 (124M) on OpenWebText
 # I/O
@@ -79,11 +84,7 @@ exec(open('configurator.py').read()) # overrides from command line or config fil
 config = {k: globals()[k] for k in config_keys} # will be useful for logging
 # -----------------------------------------------------------------------------
 
-# Optimization: activation checkpointing
-activation_checkpoint = False
-# Optimization: Parameter Offloading using deepspeed
-deep_speed = False
-
+#####
 deepspeed_config = {
     "train_micro_batch_size_per_gpu": batch_size,
     "gradient_accumulation_steps": gradient_accumulation_steps,
@@ -204,6 +205,7 @@ if init_from == 'scratch':
     else:
         gptconf = GPTConfig(**model_args)
         model = GPT(gptconf)
+
 elif init_from == 'resume':
     print(f"Resuming training from {out_dir}")
     # resume training from a checkpoint.
