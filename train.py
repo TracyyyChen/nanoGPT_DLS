@@ -185,7 +185,7 @@ if os.path.exists(meta_path):
 
 ### model init
 model_args = dict(n_layer=n_layer, n_head=n_head, n_embd=n_embd, block_size=block_size,
-                  bias=bias, vocab_size=None, dropout=dropout, activation_checkpoint=activation_checkpoint, deep_speed=deep_speed) # start with model_args from command line
+                  bias=bias, vocab_size=None, dropout=dropout, activation_checkpoint=activation_checkpoint) # start with model_args from command line
 
 
 if init_from == 'scratch':
