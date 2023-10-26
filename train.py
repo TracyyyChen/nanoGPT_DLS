@@ -94,10 +94,6 @@ deepspeed_config = {
             "lr": learning_rate,
             "weight_decay": weight_decay,
             "betas": [beta1, beta2],
-            "decay_lr": decay_lr,
-            "warmup_iters": warmup_iters,
-            "lr_decay_iters": lr_decay_iters,
-            "min_lr": min_lr,
         },
     },
     "zero_optimization": {
