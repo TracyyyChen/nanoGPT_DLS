@@ -30,6 +30,11 @@ from torch.distributed import init_process_group, destroy_process_group
 from model import GPTConfig, GPT
 
 # -----------------------------------------------------------------------------
+# activation checkpointing
+activation_checkpoint = False
+
+
+# -----------------------------------------------------------------------------
 # default config values designed to train a gpt2 (124M) on OpenWebText
 # I/O
 out_dir = 'out'
@@ -140,9 +145,11 @@ if os.path.exists(meta_path):
     meta_vocab_size = meta['vocab_size']
     print(f"found vocab_size = {meta_vocab_size} (inside {meta_path})")
 
-# model init
+### model init
 model_args = dict(n_layer=n_layer, n_head=n_head, n_embd=n_embd, block_size=block_size,
-                  bias=bias, vocab_size=None, dropout=dropout) # start with model_args from command line
+                  bias=bias, vocab_size=None, dropout=dropout, activation_checkpoint=activation_checkpoint) # start with model_args from command line
+
+
 if init_from == 'scratch':
     # init a new model from scratch
     print("Initializing a new model from scratch")
