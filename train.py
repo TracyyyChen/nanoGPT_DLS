@@ -113,12 +113,10 @@ deepspeed_config = {
         },
     },
     "activation_checkpointing": activation_checkpoint,
-    "fp16": {
-        "enabled": dtype == "float16",
-    },
-    "bf16": {
-        "enabled": dtype == "bfloat16",
-    },
+    "offload_optimizer": {
+        "device": "cpu",  # Offload optimizer states to CPU
+        "pin_memory": True  # Pin optimizer states to memory
+    }
 }
 
 
