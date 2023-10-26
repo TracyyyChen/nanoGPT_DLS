@@ -86,7 +86,7 @@ config = {k: globals()[k] for k in config_keys} # will be useful for logging
 
 #####
 deepspeed_config = {
-    "train_micro_batch_size": batch_size,
+    "train_batch_size": batch_size,
     "block_size": block_size,
     "gradient_accumulation_steps": gradient_accumulation_steps,
     "optimizer": {
