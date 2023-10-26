@@ -166,8 +166,7 @@ if init_from == 'scratch':
     if deep_speed:
         print("optimizaiton: Parameter Offloading applied")
         gptconf = GPTConfig(**model_args)
-        model = GPT(gptconf)
-        model_engine, _, _, _ = deepspeed.initialize(model, config='deepspeed_config.json')
+        model, _, _, _ = deepspeed.initialize(model = GPT(gptconf), config='deepspeed_config.json')
     else:
         gptconf = GPTConfig(**model_args)
         model = GPT(gptconf)
@@ -262,7 +261,8 @@ if wandb_log and master_process:
     import wandb
     wandb.init(project=wandb_project, name=wandb_run_name, config=config)
 
-# training loop
+
+### training loop
 X, Y = get_batch('train') # fetch the very first batch
 t0 = time.time()
 local_iter_num = 0 # number of iterations in the lifetime of this process
