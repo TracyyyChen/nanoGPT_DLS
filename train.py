@@ -200,7 +200,7 @@ if init_from == 'scratch':
     if deep_speed:
         print("optimizaiton: Parameter Offloading applied")
         gptconf = GPTConfig(**model_args)
-        model, _, _, _ = deepspeed.initialize(model = GPT(gptconf), config='deepspeed_config.json')
+        model, _, _, _ = deepspeed.initialize(model = GPT(gptconf), config_params=deepspeed_config)
     else:
         gptconf = GPTConfig(**model_args)
         model = GPT(gptconf)
