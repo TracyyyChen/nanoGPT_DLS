@@ -15,6 +15,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 from torch.utils.checkpoint import checkpoint
+import deepspeed
 
 class LayerNorm(nn.Module):
     """ LayerNorm but with an optional bias. PyTorch doesn't support simply bias=False """
@@ -115,7 +116,7 @@ class GPTConfig:
     n_embd: int = 768
     dropout: float = 0.0
     bias: bool = True # True: bias in Linears and LayerNorms, like GPT-2. False: a bit better and faster
-    activation_checkpoint = False
+    activation_checkpoint = bool = False
 
 class GPT(nn.Module):
 
@@ -240,6 +241,7 @@ class GPT(nn.Module):
         if 'dropout' in override_args:
             print(f"overriding dropout rate to {override_args['dropout']}")
             config_args['dropout'] = override_args['dropout']
+            config_args['activation_checkpoint'] = override_args['activation_checkpoint']
         # create a from-scratch initialized minGPT model
         config = GPTConfig(**config_args)
         model = GPT(config)

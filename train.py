@@ -26,12 +26,14 @@ import numpy as np
 import torch
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import init_process_group, destroy_process_group
+import deepspeed
 
 from model import GPTConfig, GPT
 
 # -----------------------------------------------------------------------------
 # activation checkpointing
 activation_checkpoint = False
+deep_speed = False
 
 
 # -----------------------------------------------------------------------------
@@ -147,7 +149,7 @@ if os.path.exists(meta_path):
 
 ### model init
 model_args = dict(n_layer=n_layer, n_head=n_head, n_embd=n_embd, block_size=block_size,
-                  bias=bias, vocab_size=None, dropout=dropout, activation_checkpoint=activation_checkpoint) # start with model_args from command line
+                  bias=bias, vocab_size=None, dropout=dropout, activation_checkpoint=activation_checkpoint, deep_speed=deep_speed) # start with model_args from command line
 
 
 if init_from == 'scratch':
@@ -185,7 +187,7 @@ elif init_from == 'resume':
 elif init_from.startswith('gpt2'):
     print(f"Initializing from OpenAI GPT-2 weights: {init_from}")
     # initialize from OpenAI GPT-2 weights
-    override_args = dict(dropout=dropout, activation_checkpoint=activation_checkpoint)
+    override_args = dict(dropout=dropout, activation_checkpoint=activation_checkpoint, deep_speed=deep_speed)
     model = GPT.from_pretrained(init_from, override_args)
     # read off the created config params, so we can store them into checkpoint correctly
     for k in ['n_layer', 'n_head', 'n_embd', 'block_size', 'bias', 'vocab_size']:
