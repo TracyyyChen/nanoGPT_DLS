@@ -119,6 +119,7 @@ class GPTConfig:
     #custimized parameters for optimization
     activation_checkpoint: bool = False
     #deep_speed: bool = False
+    optimizer: str = "ADAM"
 
 class GPT(nn.Module):
 
