@@ -152,6 +152,9 @@ model_args = dict(n_layer=n_layer, n_head=n_head, n_embd=n_embd, block_size=bloc
                   bias=bias, vocab_size=None, dropout=dropout, activation_checkpoint=activation_checkpoint, deep_speed=deep_speed) # start with model_args from command line
 
 
+def configure_deepspeed ():
+    return
+
 if init_from == 'scratch':
     # init a new model from scratch
     print("Initializing a new model from scratch")
@@ -159,8 +162,15 @@ if init_from == 'scratch':
     if meta_vocab_size is None:
         print("defaulting to vocab_size of GPT-2 to 50304 (50257 rounded up for efficiency)")
     model_args['vocab_size'] = meta_vocab_size if meta_vocab_size is not None else 50304
-    gptconf = GPTConfig(**model_args)
-    model = GPT(gptconf)
+
+    if deep_speed:
+        print("optimizaiton: Parameter Offloading applied")
+        gptconf = GPTConfig(**model_args)
+        model = GPT(gptconf)
+        model_engine, _, _, _ = deepspeed.initialize(model, config='deepspeed_config.json')
+    else:
+        gptconf = GPTConfig(**model_args)
+        model = GPT(gptconf)
 elif init_from == 'resume':
     print(f"Resuming training from {out_dir}")
     # resume training from a checkpoint.
