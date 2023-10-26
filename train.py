@@ -112,7 +112,6 @@ deepspeed_config = {
             "total_steps": max_iters,
         },
     },
-    "activation_checkpointing": activation_checkpoint,
     "offload_optimizer": {
         "device": "cpu",  # Offload optimizer states to CPU
         "pin_memory": True  # Pin optimizer states to memory
